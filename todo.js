@@ -8,7 +8,6 @@ class Todo {
     this.title = title;
     this.data = data;
     this.filteredData = data;
-    this.count = data.length;
     this.addTask = this.addTask.bind(this);
     this.deleteTask = this.deleteTask.bind(this);
     this.toggleStatus = this.toggleStatus.bind(this);
@@ -17,11 +16,11 @@ class Todo {
   this.sKey=sKey;
   this.sType=sType;
   if(sType=='local'){
-    console.log('local')
+    // console.log('local')
   this.todos=JSON.parse(localStorage.getItem(this.sKey)) || [];
   }
   else if(sType=='session'){
-  console.log('session')
+  // console.log('session')
   this.todos=JSON.parse(sessionStorage.getItem(this.sKey)) || [];
   }
   else
@@ -50,6 +49,12 @@ class Todo {
 
   addToLocalStorage(todos,type) {
       console.log(type)
+      if(type=='local'){
+        localStorage.setItem(this.sKey, JSON.stringify(todos));  
+      }else if(type=='session'){
+       
+        sessionStorage.setItem(this.sKey, JSON.stringify(todos));  
+      }else
       localStorage.setItem(this.sKey, JSON.stringify(todos));     
   }
 
@@ -102,7 +107,8 @@ class Todo {
     id = new Date().getUTCMilliseconds(),
     name = `New task #${new Date().getUTCMilliseconds()}`,
     completed = false
-  } = {},type) {
+  } = {}) {
+    // console.log(this.sType)
     const inputValue = this.nodes.input.value.trim();
     const taskName = inputValue.length > 0 ? inputValue : name;
     const newTask = { id, name: taskName, completed };
@@ -120,14 +126,14 @@ class Todo {
         item.completed = !item.completed;
       }
     });
-    this.addToLocalStorage(this.todos);
+    this.addToLocalStorage(this.todos,this.sType);
   }
 
  deleteTask(id) {
    this.todos = this.todos.filter( (item)=> {
       return item.id != id;
     });
-    this.addToLocalStorage(this.todos);
+    this.addToLocalStorage(this.todos,this.sType);
     this.listUI();
     this.filterData();
   }
@@ -311,16 +317,16 @@ class Todo {
   }
 }
 
-const todoList = [
+// const todoList = [
   
-];
+// ];
 
 const TodoApp = new Todo('class1','local');
 
 TodoApp.init();
 
 
-  const TodoAp = new Todo('listS','local');
+  const TodoAp = new Todo('listS','session');
 
   TodoAp.init();
 
